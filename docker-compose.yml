@@ -42,7 +42,7 @@ services:
       - api
 
   database:
-    image: mariadb
+    image: mariadb:10.6.3
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
