@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: ./.docker/nginx/Dockerfile
-    container_name: nginx
     volumes:
       - ./:/var/www/html/
       - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -23,7 +22,8 @@ services:
     build:
       context: .
       dockerfile: ./.docker/php/Dockerfile
-    container_name: php
+    environment:
+      TZ: Europe/Prague
     volumes:
       - ./:/var/www/html/
     depends_on:
@@ -31,17 +31,26 @@ services:
     networks:
       - api
 
+  adminer:
+    image: dockette/adminer:dg
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - "8000:80"
+    networks:
+      - api
+
   database:
     image: mariadb
-    container_name: database
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: root
-      MARIADB_DATABASE: api_platform
-      MARIADB_USER: user
-      MARIADB_PASSWORD: userpass
-    ports:
-      - "4306:3306"
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: api_platform
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+      TZ: Europe/Prague
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - db_data:/var/lib/mysql
     networks:
