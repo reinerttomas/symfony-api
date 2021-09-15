@@ -64,6 +64,13 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "phpstan": [
+            "@php bin/console cache:warmup --env=test",
+            "phpstan analyse -c phpstan.neon --no-progress --memory-limit 1G"
+        ],
+        "ci": [
+            "@phpstan"
         ]
     },
     "conflict": {
@@ -76,6 +83,11 @@
         }
     },
     "require-dev": {
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-doctrine": "^0.12.44",
+        "phpstan/phpstan-strict-rules": "^0.12.11",
+        "phpstan/phpstan-symfony": "^0.12.44",
         "symfony/maker-bundle": "^1.33"
     }
 }
