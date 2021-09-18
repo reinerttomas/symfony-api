@@ -3,28 +3,41 @@ declare(strict_types=1);
 
 namespace App\Utils;
 
+use App\Exception\Exception;
 use DateTimeInterface;
-use DateTime as PhpDateTime;
+use Exception as PhpException;
 use Nette\Utils\DateTime as NetteDateTime;
 
 final class DateTime extends NetteDateTime
 {
     private const FORMAT_DEFAULT_DATE = 'Y-m-d';
     private const FORMAT_DEFAULT_DATETIME = 'Y-m-d H:i:s';
-    private const FORMAT_DEFAULT_DATETIME_WITH_MICROSECONDS = 'Y-m-d H:i:s';
+
+    public static function now(): DateTime
+    {
+        try {
+            return new DateTime();
+        } catch (PhpException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public static function fromPhpDateTime(DateTimeInterface $dateTime): DateTime
     {
-        return new DateTime($dateTime->format(self::FORMAT_DEFAULT_DATETIME_WITH_MICROSECONDS));
+        try {
+            return self::from($dateTime);
+        } catch (PhpException $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
-    public static function fromPhpDateTimeOrNull(?PhpDateTime $dateTime = null): ?DateTime
+    public static function fromPhpDateTimeOrNull(?DateTimeInterface $dateTime = null): ?DateTime
     {
         if ($dateTime === null) {
             return null;
         }
 
-        return new DateTime($dateTime->format(self::FORMAT_DEFAULT_DATETIME_WITH_MICROSECONDS));
+        return self::fromPhpDateTime($dateTime);
     }
 
     public function toStringDate(): string
@@ -35,11 +48,6 @@ final class DateTime extends NetteDateTime
     public function toStringDateTime(): string
     {
         return $this->format(self::FORMAT_DEFAULT_DATETIME);
-    }
-
-    public function toStringDateTimeWithMicroseconds(): string
-    {
-        return $this->format(self::FORMAT_DEFAULT_DATETIME_WITH_MICROSECONDS);
     }
 
     public function __toString(): string

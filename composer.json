@@ -69,8 +69,10 @@
             "@php bin/console cache:warmup --env=test",
             "phpstan analyse -c phpstan.neon --no-progress --memory-limit 1G"
         ],
+        "phpunit": "php ./vendor/bin/phpunit",
         "ci": [
-            "@phpstan"
+            "@phpstan",
+            "@phpunit"
         ]
     },
     "conflict": {
@@ -89,6 +91,10 @@
         "phpstan/phpstan-doctrine": "^0.12.44",
         "phpstan/phpstan-strict-rules": "^0.12.11",
         "phpstan/phpstan-symfony": "^0.12.44",
-        "symfony/maker-bundle": "^1.33"
+        "phpunit/phpunit": "^9.5",
+        "symfony/browser-kit": "5.3.*",
+        "symfony/css-selector": "5.3.*",
+        "symfony/maker-bundle": "^1.33",
+        "symfony/phpunit-bridge": "^5.3"
     }
 }
