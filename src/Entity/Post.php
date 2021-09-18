@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
 use App\Utils\DateTime;
+use App\Utils\Strings;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
+#[ApiResource]
 class Post
 {
     /**
@@ -26,10 +29,15 @@ class Post
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $author;
+    private string $slug;
 
     /**
      * @ORM\Column(type="string", length=255)
+     */
+    private string $author;
+
+    /**
+     * @ORM\Column(type="text")
      */
     private string $content;
 
@@ -53,7 +61,7 @@ class Post
         string $author,
         string $content,
     ) {
-        $this->title = $title;
+        $this->changeTitle($title);
         $this->author = $author;
         $this->content = $content;
         $this->createdAt = new DateTime();
@@ -74,8 +82,14 @@ class Post
     public function changeTitle(string $title): Post
     {
         $this->title = $title;
+        $this->slug = Strings::webalize($title);
 
         return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
     
     public function getAuthor(): string
