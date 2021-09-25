@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use App\Exception\Exception;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,5 +48,15 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('email', $email);
 
         return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function store(User $entity): User
+    {
+        $em = $this->getEntityManager();
+
+        $em->persist($entity);
+        $em->flush();
+
+        return $entity;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Utils\DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -22,7 +23,7 @@ class UserTest extends KernelTestCase
     }
 
     /**
-     * @dataProvider provideUserData
+     * @dataProvider provideUserGetData
      */
     public function testGet(
         int $id,
@@ -45,7 +46,7 @@ class UserTest extends KernelTestCase
     }
 
     /**
-     * @dataProvider provideUserData
+     * @dataProvider provideUserGetData
      */
     public function testGetByEmail(
         int $id,
@@ -67,7 +68,30 @@ class UserTest extends KernelTestCase
         self::assertEquals($updatedAt, $user->getUpdatedAt()?->toStringDate());
     }
 
-    public function provideUserData(): array
+    /**
+     * @dataProvider provideUserStoreData
+     */
+    public function testCreate(array $expect, array $input): void
+    {
+        $user = new User(
+            $input['email'],
+            $input['password'],
+            $input['name'],
+            $input['surname'],
+        );
+
+        $user = $this->userRepository->store($user);
+
+        self::assertEquals($expect['id'], $user->getId());
+        self::assertEquals($expect['email'], $user->getEmail());
+        self::assertEquals($expect['password'], $user->getPassword());
+        self::assertEquals($expect['name'], $user->getName());
+        self::assertEquals($expect['surname'], $user->getSurname());
+        self::assertEquals($expect['createdAt'], $user->getCreatedAt()->toStringDate());
+        self::assertEquals($expect['updatedAt'], $user->getUpdatedAt()?->toStringDate());
+    }
+
+    public function provideUserGetData(): array
     {
         return [
             [
@@ -87,6 +111,29 @@ class UserTest extends KernelTestCase
                 'surname' => 'Novak',
                 'createdAt' => DateTime::now()->toStringDate(),
                 'updatedAt' => null
+            ],
+        ];
+    }
+
+    public function provideUserStoreData(): array
+    {
+        return [
+            [
+                [
+                    'id' => 3,
+                    'email' => 'user.creare@example.com',
+                    'password' => '1234',
+                    'name' => 'User',
+                    'surname' => 'Create',
+                    'createdAt' => DateTime::now()->toStringDate(),
+                    'updatedAt' => null
+                ],
+                [
+                    'email' => 'user.creare@example.com',
+                    'password' => '1234',
+                    'name' => 'User',
+                    'surname' => 'Create',
+                ],
             ],
         ];
     }
