@@ -4,20 +4,20 @@ declare(strict_types=1);
 namespace App\Tests\Integration;
 
 use App\Repository\PostRepository;
+use App\Tests\Integration\Attribute\ContainerTrait;
 use App\Utils\DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class PostTest extends KernelTestCase
 {
+    use ContainerTrait;
+
     private PostRepository $postRepository;
 
     protected function setUp(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-        // (3) run some service & test the result
+        $container = $this->getContainerForTest();
+
         $this->postRepository = $container->get(PostRepository::class);
     }
 

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Exception\Exception;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,7 +24,7 @@ class UserRepository extends ServiceEntityRepository
         $entity = $this->find($id);
 
         if ($entity === null) {
-            throw new Exception('User not found. ID: ' . $id);
+            throw new NotFoundException('User not found. ID: ' . $id);
         }
 
         return $entity;
@@ -34,7 +35,7 @@ class UserRepository extends ServiceEntityRepository
         $entity = $this->findByEmail($email);
 
         if ($entity === null) {
-            throw new Exception('User not found. Email: ' . $email);
+            throw new NotFoundException('User not found. Email: ' . $email);
         }
 
         return $entity;
